@@ -58,8 +58,6 @@ function showBag() {
   // 🌟 打開背包時，傳入 isDrawing = false，代表卡片已經是翻開的
   renderCards(myBag, `🎒 我的背包 (共 ${myBag.length} 張卡)`, false);
 }
-
-// 核心渲染函數 (加入 isDrawing 參數判斷是否要蓋牌)
 function renderCards(cards, titleText, isDrawing) {
   document.getElementById('drawBtn').disabled = false;
   document.getElementById('loading').style.display = 'none';
@@ -69,18 +67,42 @@ function renderCards(cards, titleText, isDrawing) {
   container.innerHTML = '';
   
   cards.forEach(card => {
-    // 如果不是在抽卡(而是在背包)，就直接加上 flipped 類別讓卡片翻過來
     const flippedClass = isDrawing ? '' : 'flipped';
     const rInfo = rarityMap[card.rarity];
     const awardHtml = card.award ? `<div class="award-banner">${card.award}</div>` : '';
     
+    // 🌟 動態生成數值表 (判斷打者 B 還是投手 P)
+    let statsHtml = '';
+    if (card.type === 'B') {
+      statsHtml = `
+        <div class="stats-grid">
+          <div class="stat-item"><span>擊</span> ${card.con || 0}</div>
+          <div class="stat-item"><span>力</span> <div class="${card.pow >= 90 ? 'high' : ''}">${card.pow || 0}</div></div>
+          <div class="stat-item"><span>選</span> ${card.eye || 0}</div>
+          <div class="stat-item"><span>跑</span> ${card.spd || 0}</div>
+          <div class="stat-item"><span>守</span> ${card.def || 0}</div>
+        </div>
+      `;
+    } else if (card.type === 'P') {
+      statsHtml = `
+        <div class="stats-grid">
+          <div class="stat-item"><span>控</span> <div class="${card.ctrl >= 90 ? 'high' : ''}">${card.ctrl || 0}</div></div>
+          <div class="stat-item"><span>速</span> ${card.vel || 0}</div>
+          <div class="stat-item"><span>變</span> ${card.brk || 0}</div>
+          <div class="stat-item"><span>威</span> ${card.stf || 0}</div>
+          <div class="stat-item"><span>體</span> ${card.sta || 0}</div>
+          <div class="stat-item"><span>牽</span> ${card.pkf || 0}</div>
+        </div>
+      `;
+    }
+
     const cardWrap = document.createElement('div');
-    // 點擊時加上 flipped 類別，觸發 3D 旋轉
     cardWrap.className = `card-scene ${flippedClass}`;
     cardWrap.onclick = function() {
       this.classList.add('flipped');
     };
     
+    // 把 statsHtml 塞進卡片排版中
     cardWrap.innerHTML = `
       <div class="card-inner">
         <!-- 卡背 -->
@@ -92,6 +114,7 @@ function renderCards(cards, titleText, isDrawing) {
           ${awardHtml}
           <div class="team-text">${card.team}</div>
           <div class="name-text">${card.name}</div>
+          ${statsHtml} <!-- 顯示數值區塊 -->
           <div class="bottom-row">
             <span class="pos-badge">${card.pos}</span>
             <span class="rarity-text" style="color:${rInfo.color}">${rInfo.text}</span>
@@ -102,3 +125,6 @@ function renderCards(cards, titleText, isDrawing) {
     container.appendChild(cardWrap);
   });
 }
+
+
+     

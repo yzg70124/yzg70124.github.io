@@ -6,12 +6,22 @@ body {
   padding: 10px; /* 手機版縮小邊距 */
 }
 
+/* 找到原本的 .nav-buttons 替換成這段 */
 .nav-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  flex-wrap: wrap; /* 讓按鈕自動換行，不會超出手機螢幕 */
+  gap: 10px;
   margin-bottom: 20px;
 }
+
+/* 十連抽專屬的金色按鈕特效 */
+.ten-draw {
+  background: linear-gradient(135deg, #f39c12, #d35400);
+  box-shadow: 0 3px 6px rgba(211, 84, 0, 0.4);
+}
+#sortBtn { background: #27ae60; }
+#clearBtn { background: #7f8c8d; }
 
 #loading { margin-top: 15px; color: #f1c40f; }
 #sectionTitle { color: #ecf0f1; font-size: 18px; }

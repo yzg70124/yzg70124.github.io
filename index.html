@@ -11,12 +11,13 @@
   
   <!-- 把按鈕放在一個區塊裡，並新增背包按鈕 -->
   <div class="nav-buttons">
-    <button id="drawBtn" onclick="startDraw()">開卡包 (抽 5 張)</button>
-    <button id="bagBtn" onclick="showBag()">🎒 查看背包</button>
-    <button id="sortBtn" onclick="sortInventory()">✨ 整理背包</button>
-    <button id="clearBtn" onclick="clearInventory()" style="background-color: #e74c3c;">🗑️ 清空背包</button>
+  <button class="draw-btn" onclick="startDraw(1)">⚾ 單抽 (1張)</button>
+  <button class="draw-btn ten-draw" onclick="startDraw(10)">🔥 十連抽 (10張)</button>
+  <button id="bagBtn" onclick="showBag()">🎒 查看背包</button>
+  <button id="sortBtn" onclick="sortInventory()">✨ 整理</button>
+  <button id="clearBtn" onclick="clearInventory()">🗑️ 清空</button>
+</div>
 
-  </div>
   
   <div id="loading" style="display:none;">球員卡撕開中...</div>
   

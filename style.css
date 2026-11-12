@@ -6,7 +6,6 @@ body {
   padding: 20px;
 }
 
-/* 按鈕區塊排版 */
 .nav-buttons {
   display: flex;
   justify-content: center;
@@ -14,15 +13,8 @@ body {
   margin-bottom: 20px;
 }
 
-#loading {
-  margin-top: 15px; 
-  color: #f1c40f;
-}
-
-#sectionTitle {
-  color: #ecf0f1;
-  font-size: 20px;
-}
+#loading { margin-top: 15px; color: #f1c40f; }
+#sectionTitle { color: #ecf0f1; font-size: 20px; }
 
 .card-container { 
   display: flex; 
@@ -33,6 +25,7 @@ body {
 }
 
 .card {
+  position: relative; /* 重要：讓成就布條可以定位在卡片上 */
   width: 130px;
   height: 190px;
   background: white;
@@ -46,13 +39,36 @@ body {
   border: 4px solid #ccc;
   transition: transform 0.2s;
 }
+.card:active { transform: scale(0.95); }
 
-.card:active { 
-  transform: scale(0.95); 
+/* ✨ 全新稀有度外觀設計 */
+/* 傳奇 (橘金漸層) */
+.card.Legend { border-color: #d35400; background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+/* 特殊成就 (紫金漸層) */
+.card.Special { border-color: #8e44ad; background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+/* 王牌 (淺紅) */
+.card.Ace { border-color: #e74c3c; background: #fff5f5; }
+/* 稀有 (淺藍) */
+.card.Rare { border-color: #3498db; background: #f0f8ff; }
+/* 普卡 (白灰) */
+.card.Common { border-color: #bdc3c7; background: #ffffff; }
+
+/* 🏆 特殊成就標籤 (會貼在卡片左上角) */
+.award-banner {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  background: #f1c40f;
+  color: #c0392b;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  transform: rotate(-10deg);
+  border: 2px solid #fff;
+  z-index: 2;
 }
-
-.card.SSR { border-color: #ffd700; background: #fffacd; }
-.card.SR { border-color: #c0c0c0; background: #f8f9fa; }
 
 button { 
   padding: 12px 20px; 
@@ -64,4 +80,4 @@ button {
   font-weight: bold;
 }
 button:disabled { background: #95a5a6; }
-#bagBtn { background: #2980b9; } /* 背包按鈕換成藍色 */
+#bagBtn { background: #2980b9; }

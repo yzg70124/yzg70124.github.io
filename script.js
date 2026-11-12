@@ -33,18 +33,53 @@ const rarityMap = {
 
 let myBag = JSON.parse(localStorage.getItem('cpbl_bag')) || [];
 
-function startDraw() {
-  document.getElementById('drawBtn').disabled = true;
+// 🌟 支援傳入抽卡張數 (count)
+function startDraw(count) {
+  // 抽卡期間鎖定所有抽卡按鈕，防止連點重複觸發
+  const drawBtns = document.querySelectorAll('.draw-btn');
+  drawBtns.forEach(btn => btn.disabled = true);
+  
   document.getElementById('loading').style.display = 'block';
   document.getElementById('cardContainer').innerHTML = '';
   document.getElementById('sectionTitle').innerText = '';
 
   setTimeout(() => {
     let drawnCards = [];
-    for(let i = 0; i < 5; i++) {
+    // 依照傳入的 count 決定抽幾張 (1 或 10)
+    for (let i = 0; i < count; i++) {
       let randomIndex = Math.floor(Math.random() * mockPool.length);
       drawnCards.push(mockPool[randomIndex]);
     }
+    
+    // 存進背包 ('cpbl_bag')
+    myBag = myBag.concat(drawnCards);
+    localStorage.setItem('cpbl_bag', JSON.stringify(myBag));
+
+    // 恢復按鈕點擊
+    drawBtns.forEach(btn => btn.disabled = false);
+
+    // 顯示卡片 (蓋著的狀態)
+    renderCards(drawnCards, `✨ 本次 ${count} 連抽結果 (點擊翻牌)`, true);
+
+    // 💡 貼心小功能：如果是十連抽，在標題旁加一顆「一鍵全翻」按鈕
+    if (count > 1) {
+      const titleEl = document.getElementById('sectionTitle');
+      titleEl.innerHTML += ` <button onclick="flipAllCards()" style="padding: 4px 10px; font-size: 12px; margin-left: 8px; background: #f1c40f; color: #2c3e50;">⚡ 全部翻開</button>`;
+    }
+  }, 600);
+}
+
+// ⚡ 一鍵翻開所有卡片
+function flipAllCards() {
+  const allCards = document.querySelectorAll('.card-scene');
+  allCards.forEach((card, index) => {
+    // 加上一點時間差，讓卡片像波浪一樣依序翻開，視覺效果超爽！
+    setTimeout(() => {
+      card.classList.add('flipped');
+    }, index * 80); 
+  });
+}
+
     
     myBag = myBag.concat(drawnCards);
     localStorage.setItem('cpbl_bag', JSON.stringify(myBag));
@@ -68,7 +103,6 @@ function showBag() {
   renderCards(myBag, `🎒 我的背包 (共 ${myBag.length} 張卡)`, false);
 }
 function renderCards(cards, titleText, isDrawing) {
-  document.getElementById('drawBtn').disabled = false;
   document.getElementById('loading').style.display = 'none';
   document.getElementById('sectionTitle').innerText = titleText;
 

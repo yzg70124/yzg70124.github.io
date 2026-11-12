@@ -1,4 +1,3 @@
-// 模擬棒球卡池資料庫
 const mockPool = [
   { id: 'P-001', name: '徐若熙', team: '味全龍', rarity: 'SSR', pos: 'SP' },
   { id: 'B-001', name: '陳傑憲', team: '統一獅', rarity: 'SSR', pos: 'OF' },
@@ -8,35 +7,59 @@ const mockPool = [
   { id: 'B-004', name: '戴培峰', team: '富邦悍將', rarity: 'N', pos: 'C' }
 ];
 
-// 點擊按鈕時執行
+// 🌟 1. 遊戲一打開，先從保險箱 (localStorage) 拿出背包資料
+// 如果沒有資料，就給他一個空的陣列 []
+let myBag = JSON.parse(localStorage.getItem('cpbl_bag')) || [];
+
 function startDraw() {
   document.getElementById('drawBtn').disabled = true;
   document.getElementById('loading').style.display = 'block';
   document.getElementById('cardContainer').innerHTML = '';
+  document.getElementById('sectionTitle').innerText = '';
 
-  // 使用 setTimeout 刻意延遲 0.8 秒，製造「抽卡中」的期待感
   setTimeout(() => {
     let drawnCards = [];
     for(let i = 0; i < 5; i++) {
       let randomIndex = Math.floor(Math.random() * mockPool.length);
       drawnCards.push(mockPool[randomIndex]);
     }
-    showCards(drawnCards);
+    
+    // 🌟 2. 把這次抽到的 5 張卡，塞進我們的背包裡
+    myBag = myBag.concat(drawnCards);
+    
+    // 🌟 3. 把更新後的背包，存回保險箱 (轉成文字格式)
+    localStorage.setItem('cpbl_bag', JSON.stringify(myBag));
+
+    // 顯示這次抽到的卡
+    renderCards(drawnCards, "✨ 本次抽卡結果 ✨");
   }, 800);
 }
 
-// 將抽到的卡牌渲染到畫面上
-function showCards(cards) {
+// 🌟 4. 查看背包功能
+function showBag() {
+  if (myBag.length === 0) {
+    document.getElementById('sectionTitle').innerText = "🎒 背包是空的，快去抽卡吧！";
+    document.getElementById('cardContainer').innerHTML = '';
+    return;
+  }
+  
+  // 把整個背包的卡牌丟給畫面顯示
+  renderCards(myBag, `🎒 我的背包 (共 ${myBag.length} 張卡)`);
+}
+
+// 統一把卡牌畫到螢幕上的函數 (抽卡結果和背包都共用這個函數)
+function renderCards(cards, titleText) {
   document.getElementById('drawBtn').disabled = false;
   document.getElementById('loading').style.display = 'none';
+  document.getElementById('sectionTitle').innerText = titleText;
 
   const container = document.getElementById('cardContainer');
+  container.innerHTML = '';
   
   cards.forEach(card => {
     const cardDiv = document.createElement('div');
     cardDiv.className = `card ${card.rarity}`;
     
-    // 設定卡牌內的 HTML 結構
     cardDiv.innerHTML = `
       <div style="font-size:12px; color:#555; text-align:left;">${card.team}</div>
       <div style="font-weight:bold; font-size:22px; margin-top:5px;">${card.name}</div>

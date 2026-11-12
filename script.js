@@ -14,6 +14,15 @@ const mockPool = [
   { id: 'C-002', name: '岳東華', team: '中信兄弟', rarity: 'Common', pos: '2B' }
 ];
 
+// 🏆 稀有度排序權重 (分數越高排越前面)
+const rarityWeight = {
+  'Legend': 5,
+  'Special': 4,
+  'Ace': 3,
+  'Rare': 2,
+  'Common': 1
+};
+
 const rarityMap = {
   'Legend': { text: '傳奇', color: '#d35400', weight: 5 },
   'Special': { text: '特殊', color: '#8e44ad', weight: 4 },
@@ -124,7 +133,57 @@ function renderCards(cards, titleText, isDrawing) {
     `;
     container.appendChild(cardWrap);
   });
+  
+  // ✨ 整理背包功能
+function sortInventory() {
+  // 1. 從 localStorage 讀取目前的背包資料 (假設你的儲存鍵名是 'myCards')
+  let savedCards = JSON.parse(localStorage.getItem('myCards')) || [];
+  
+  if (savedCards.length === 0) {
+    alert('你的背包是空的，先去抽幾張卡吧！');
+    return;
+  }
+
+  // 2. 執行排序 (先比稀有度，再比隊伍，最後比 ID)
+  savedCards.sort((a, b) => {
+    const weightA = rarityWeight[a.rarity] || 0;
+    const weightB = rarityWeight[b.rarity] || 0;
+    
+    if (weightB !== weightA) {
+      return weightB - weightA; // 稀有度高的排前面
+    }
+    if (a.team !== b.team) {
+      return a.team.localeCompare(b.team); // 稀有度一樣時，按隊伍名稱排序
+    }
+    return a.id.localeCompare(b.id); // 隊伍一樣時，按球員 ID 排序
+  });
+
+  // 3. 把排好序的陣列存回 localStorage
+  localStorage.setItem('myCards', JSON.stringify(savedCards));
+  
+  // 4. 重新呼叫 renderCards 來顯示整理後的畫面
+  // (這裡最後一個參數 true 代表是看背包，不需要翻牌動畫)
+  renderCards(savedCards, `🎒 我的背包 (共 ${savedCards.length} 張) - 已排序`, true);
 }
+
+// 🗑️ 清空背包功能
+function clearInventory() {
+  // 加入防呆確認，避免手滑按到
+  const confirmClear = confirm('確定要清空背包嗎？這會把所有抽到的心血全部刪除喔！');
+  
+  if (confirmClear) {
+    // 清除 localStorage 裡的紀錄
+    localStorage.removeItem('myCards');
+    
+    // 清空畫面
+    const container = document.getElementById('cardContainer');
+    container.innerHTML = '';
+    document.getElementById('sectionTitle').innerText = '背包已清空';
+    
+    alert('背包已經乾乾淨淨了！');
+  }
+}
+
 
 
      

@@ -3,7 +3,7 @@ body {
   text-align: center; 
   background-color: #2c3e50; 
   color: white; 
-  padding: 20px;
+  padding: 10px; /* 手機版縮小邊距 */
 }
 
 .nav-buttons {
@@ -14,70 +14,103 @@ body {
 }
 
 #loading { margin-top: 15px; color: #f1c40f; }
-#sectionTitle { color: #ecf0f1; font-size: 20px; }
+#sectionTitle { color: #ecf0f1; font-size: 18px; }
 
+/* 🌟 1. 改用 Grid 排版，強制一排 3 格 */
 .card-container { 
-  display: flex; 
-  justify-content: center; 
-  flex-wrap: wrap; 
-  gap: 15px; 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 8px; /* 手機上一排3格比較擠，把間距縮小 */
   margin-top: 20px; 
 }
 
-.card {
-  position: relative; /* 重要：讓成就布條可以定位在卡片上 */
-  width: 130px;
-  height: 190px;
-  background: white;
-  color: black;
-  border-radius: 10px;
+/* 🌟 2. 3D 翻轉的外部場景 */
+.card-scene {
+  perspective: 1000px;
+  width: 100%;
+  aspect-ratio: 7 / 10; /* 維持標準撲克牌比例 */
+  cursor: pointer;
+}
+
+/* 🌟 3. 負責翻轉的卡牌本體 */
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 加入翻牌的Q彈特效 */
+  transform-style: preserve-3d;
+}
+
+/* 當卡牌加上 flipped 屬性時，旋轉 180 度 */
+.card-scene.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* 🌟 4. 卡片的正面與背面共用屬性 */
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* 翻過去時隱藏背面 */
+  border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-sizing: border-box;
+}
+
+/* 🃏 卡背 (蓋牌時顯示) */
+.card-cover {
+  background: repeating-linear-gradient(45deg, #1abc9c, #1abc9c 10px, #16a085 10px, #16a085 20px);
+  border: 3px solid #f1c40f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* ⚾ 卡面 (翻開後的球員資料) */
+.card-player {
+  transform: rotateY(180deg); /* 預先反轉背在後面 */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 12px;
-  border: 4px solid #ccc;
-  transition: transform 0.2s;
+  padding: 8px; /* 縮小內距以適應 3 格排版 */
+  border: 3px solid #ccc;
 }
-.card:active { transform: scale(0.95); }
 
-/* ✨ 全新稀有度外觀設計 */
-/* 傳奇 (橘金漸層) */
-.card.Legend { border-color: #d35400; background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
-/* 特殊成就 (紫金漸層) */
-.card.Special { border-color: #8e44ad; background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
-/* 王牌 (淺紅) */
-.card.Ace { border-color: #e74c3c; background: #fff5f5; }
-/* 稀有 (淺藍) */
-.card.Rare { border-color: #3498db; background: #f0f8ff; }
-/* 普卡 (白灰) */
-.card.Common { border-color: #bdc3c7; background: #ffffff; }
+/* 稀有度顏色背景 */
+.card-player.Legend { border-color: #d35400; background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+.card-player.Special { border-color: #8e44ad; background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+.card-player.Ace { border-color: #e74c3c; background: #fff5f5; }
+.card-player.Rare { border-color: #3498db; background: #f0f8ff; }
+.card-player.Common { border-color: #bdc3c7; background: #ffffff; }
 
-/* 🏆 特殊成就標籤 (會貼在卡片左上角) */
+/* 成就標籤 (縮小以適應手機) */
 .award-banner {
   position: absolute;
-  top: -10px;
-  left: -10px;
+  top: -8px;
+  left: -8px;
   background: #f1c40f;
   color: #c0392b;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
-  padding: 5px 8px;
-  border-radius: 5px;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  padding: 3px 5px;
+  border-radius: 4px;
   transform: rotate(-10deg);
-  border: 2px solid #fff;
+  border: 1.5px solid #fff;
   z-index: 2;
 }
 
-button { 
-  padding: 12px 20px; 
-  font-size: 16px; 
-  border-radius: 8px; 
-  border: none; 
-  background: #e74c3c; 
-  color: white; 
-  font-weight: bold;
-}
+/* 縮小文字字體，確保 3 格排版時不會擠爆 */
+.team-text { font-size: 10px; color: #555; text-align: left; z-index: 1; }
+.name-text { font-weight: bold; font-size: 16px; margin-top: 4px; z-index: 1; line-height: 1.1; }
+.bottom-row { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; z-index: 1; }
+.pos-badge { background: #34495e; color: white; padding: 2px 4px; border-radius: 3px; font-size: 10px; }
+.rarity-text { font-weight: bold; font-size: 12px; }
+
+button { padding: 12px 18px; font-size: 16px; border-radius: 8px; border: none; background: #e74c3c; color: white; font-weight: bold;}
 button:disabled { background: #95a5a6; }
 #bagBtn { background: #2980b9; }

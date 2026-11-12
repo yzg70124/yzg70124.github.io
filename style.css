@@ -6,9 +6,22 @@ body {
   padding: 20px;
 }
 
+/* 按鈕區塊排版 */
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
 #loading {
   margin-top: 15px; 
   color: #f1c40f;
+}
+
+#sectionTitle {
+  color: #ecf0f1;
+  font-size: 20px;
 }
 
 .card-container { 
@@ -16,7 +29,7 @@ body {
   justify-content: center; 
   flex-wrap: wrap; 
   gap: 15px; 
-  margin-top: 30px; 
+  margin-top: 20px; 
 }
 
 .card {
@@ -35,15 +48,15 @@ body {
 }
 
 .card:active { 
-  transform: scale(0.95); /* 手機點擊時卡牌會稍微內縮 */
+  transform: scale(0.95); 
 }
 
 .card.SSR { border-color: #ffd700; background: #fffacd; }
 .card.SR { border-color: #c0c0c0; background: #f8f9fa; }
 
 button { 
-  padding: 12px 24px; 
-  font-size: 18px; 
+  padding: 12px 20px; 
+  font-size: 16px; 
   border-radius: 8px; 
   border: none; 
   background: #e74c3c; 
@@ -51,3 +64,4 @@ button {
   font-weight: bold;
 }
 button:disabled { background: #95a5a6; }
+#bagBtn { background: #2980b9; } /* 背包按鈕換成藍色 */
